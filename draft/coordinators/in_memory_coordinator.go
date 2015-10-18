@@ -22,7 +22,6 @@ func NewInMemoryCoordinator() (*InMemoryCoordinator) {
 }
 
 func(i *InMemoryCoordinator) DraftRoom(id string, userID string) (*draft.Room, error) {
-	// TODO Implement
 	room, ok := i.DraftRooms(id)
 	if !ok {
 		return nil, errors.New("Couldn't find draft room")
@@ -31,6 +30,7 @@ func(i *InMemoryCoordinator) DraftRoom(id string, userID string) (*draft.Room, e
 	return room, nil
 }
 
-func (i *InMemoryCoordinator) CreateDraftRoom(id string) (error) {
+func (i *InMemoryCoordinator) CreateDraftRoom(id string) (*draft.Room, error) {
 	i[id] = &draft.Room{}
+	return i[id], nil
 }
