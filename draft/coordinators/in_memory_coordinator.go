@@ -2,7 +2,7 @@ package coordinators
 
 import (
 	"errors"
-	
+
 	"github.com/flp/cuddly-quack/draft"
 )
 
@@ -15,22 +15,22 @@ type InMemoryCoordinator struct {
 	DraftRooms map[string]*draft.Room
 }
 
-func NewInMemoryCoordinator() (*InMemoryCoordinator) {
+func NewInMemoryCoordinator() *InMemoryCoordinator {
 	return &InMemoryCoordinator{
 		DraftRooms: make(map[string]*draft.Room),
 	}
 }
 
-func(i *InMemoryCoordinator) DraftRoom(id string, userID string) (*draft.Room, error) {
-	room, ok := i.DraftRooms(id)
+func (i *InMemoryCoordinator) GetDraftRoom(id string, userID string) (*draft.Room, error) {
+	room, ok := i.DraftRooms[id]
 	if !ok {
 		return nil, errors.New("Couldn't find draft room")
 	}
-	
+
 	return room, nil
 }
 
 func (i *InMemoryCoordinator) CreateDraftRoom(id string) (*draft.Room, error) {
-	i[id] = &draft.Room{}
-	return i[id], nil
+	i.DraftRooms[id] = &draft.Room{}
+	return i.DraftRooms[id], nil
 }
