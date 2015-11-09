@@ -59,4 +59,7 @@ target/
 # vim
 *.swp
 
+# OSX
+.DS_Store
+
 bin
