@@ -2,6 +2,7 @@ package coordinators
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/flp/cuddly-quack/draft"
 )
@@ -12,6 +13,7 @@ import (
 // This is intended to be a preliminary implementation for testing purposes.
 // In the future, we'll want more persistent draft rooms.
 type InMemoryCoordinator struct {
+	Lock       sync.Mutex
 	DraftRooms map[string]*draft.Room
 }
 
@@ -22,7 +24,13 @@ func NewInMemoryCoordinator() *InMemoryCoordinator {
 }
 
 func (i *InMemoryCoordinator) GetDraftRoom(id string, userID string) (*draft.Room, error) {
-	room, ok := i.DraftRooms[id]
+	var room *draft.Room
+	var ok bool
+
+	i.Lock.Lock()
+	room, ok = i.DraftRooms[id]
+	i.Lock.Unlock()
+
 	if !ok {
 		return nil, errors.New("Couldn't find draft room")
 	}
@@ -31,6 +39,12 @@ func (i *InMemoryCoordinator) GetDraftRoom(id string, userID string) (*draft.Roo
 }
 
 func (i *InMemoryCoordinator) CreateDraftRoom(id string) (*draft.Room, error) {
+	var room *draft.Room
+
+	i.Lock.Lock()
 	i.DraftRooms[id] = &draft.Room{}
-	return i.DraftRooms[id], nil
+	room = i.DraftRooms[id]
+	i.Lock.Unlock()
+
+	return room, nil
 }
