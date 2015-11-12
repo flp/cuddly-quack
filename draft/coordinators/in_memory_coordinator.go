@@ -27,7 +27,7 @@ func NewInMemoryCoordinator() *InMemoryCoordinator {
 	}
 }
 
-func (i *InMemoryCoordinator) GetDraftRoom(id string, userID string) (*draft.Room, error) {
+func (i *InMemoryCoordinator) GetDraftRoom(id string) (*draft.Room, error) {
 	var room *draft.Room
 	var ok bool
 
