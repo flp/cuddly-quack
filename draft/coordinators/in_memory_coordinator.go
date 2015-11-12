@@ -42,12 +42,18 @@ func (i *InMemoryCoordinator) GetDraftRoom(id string, userID string) (*draft.Roo
 	return room, nil
 }
 
-func (i *InMemoryCoordinator) CreateDraftRoom(id string) (*draft.Room, error) {
+func (i *InMemoryCoordinator) CreateDraftRoom(name string) (*draft.Room, error) {
 	var room *draft.Room
 
 	i.Lock.Lock()
-	i.DraftRooms[id] = &draft.Room{}
-	room = i.DraftRooms[id]
+
+	id := uuid.NewV4()
+	room = &draft.Room{
+		Name: name,
+		UUID: id,
+	}
+
+	i.DraftRooms[id.String()] = room
 	i.Lock.Unlock()
 
 	return room, nil
