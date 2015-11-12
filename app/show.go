@@ -1,12 +1,15 @@
 package app
 
-import(
+import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-func (i *IndexHandler) ServeHttp(rw http.ResponseWriter, r*http.Request) {
+type ShowHandler struct{}
+
+func (s *ShowHandler) ServeHttp(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	room, ok := coordinators.DefaultInMemoryCoordinator[id]
@@ -15,5 +18,5 @@ func (i *IndexHandler) ServeHttp(rw http.ResponseWriter, r*http.Request) {
 		return
 	}
 
-	rw.Write([]byte(fmt.Sprintf("%v\n", room)))	
+	rw.Write([]byte(fmt.Sprintf("%v\n", room)))
 }

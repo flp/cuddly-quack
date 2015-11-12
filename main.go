@@ -24,6 +24,7 @@ func main() {
 	fmt.Println(p)
 
 	http.Handle("/", &app.IndexHandler{})
+	http.Handle("/drafts/{id}", &app.ShowHandler{})
 	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
