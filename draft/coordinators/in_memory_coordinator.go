@@ -5,6 +5,8 @@ import (
 	"sync"
 
 	"github.com/flp/cuddly-quack/draft"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 // InMemoryCoordinator is a very basic implementation
@@ -16,6 +18,8 @@ type InMemoryCoordinator struct {
 	Lock       sync.Mutex
 	DraftRooms map[string]*draft.Room
 }
+
+var DefaultInMemoryCoordinator *InMemoryCoordinator
 
 func NewInMemoryCoordinator() *InMemoryCoordinator {
 	return &InMemoryCoordinator{
@@ -47,4 +51,8 @@ func (i *InMemoryCoordinator) CreateDraftRoom(id string) (*draft.Room, error) {
 	i.Lock.Unlock()
 
 	return room, nil
+}
+
+func init() {
+	DefaultInMemoryCoordinator = NewInMemoryCoordinator()
 }
