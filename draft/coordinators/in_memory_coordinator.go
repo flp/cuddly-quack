@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/flp/cuddly-quack/draft"
+	"github.com/flp/cuddly-quack/wire"
 
 	uuid "github.com/satori/go.uuid"
 )
@@ -42,14 +43,14 @@ func (i *InMemoryCoordinator) GetDraftRoom(id string) (*draft.Room, error) {
 	return room, nil
 }
 
-func (i *InMemoryCoordinator) CreateDraftRoom(name string) (*draft.Room, error) {
+func (i *InMemoryCoordinator) CreateDraftRoom(req *wire.CreateDraftRequest) (*draft.Room, error) {
 	var room *draft.Room
 
 	i.Lock.Lock()
 
 	id := uuid.NewV4()
 	room = &draft.Room{
-		Name: name,
+		Name: req.Name,
 		UUID: id,
 	}
 
