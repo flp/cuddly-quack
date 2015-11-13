@@ -2,8 +2,11 @@ package coordinators
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/flp/cuddly-quack/draft"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 // InMemoryCoordinator is a very basic implementation
@@ -12,8 +15,11 @@ import (
 // This is intended to be a preliminary implementation for testing purposes.
 // In the future, we'll want more persistent draft rooms.
 type InMemoryCoordinator struct {
+	Lock       sync.Mutex
 	DraftRooms map[string]*draft.Room
 }
+
+var DefaultInMemoryCoordinator *InMemoryCoordinator
 
 func NewInMemoryCoordinator() *InMemoryCoordinator {
 	return &InMemoryCoordinator{
@@ -22,7 +28,13 @@ func NewInMemoryCoordinator() *InMemoryCoordinator {
 }
 
 func (i *InMemoryCoordinator) GetDraftRoom(id string, userID string) (*draft.Room, error) {
-	room, ok := i.DraftRooms[id]
+	var room *draft.Room
+	var ok bool
+
+	i.Lock.Lock()
+	room, ok = i.DraftRooms[id]
+	i.Lock.Unlock()
+
 	if !ok {
 		return nil, errors.New("Couldn't find draft room")
 	}
@@ -30,7 +42,23 @@ func (i *InMemoryCoordinator) GetDraftRoom(id string, userID string) (*draft.Roo
 	return room, nil
 }
 
-func (i *InMemoryCoordinator) CreateDraftRoom(id string) (*draft.Room, error) {
-	i.DraftRooms[id] = &draft.Room{}
-	return i.DraftRooms[id], nil
+func (i *InMemoryCoordinator) CreateDraftRoom(name string) (*draft.Room, error) {
+	var room *draft.Room
+
+	i.Lock.Lock()
+
+	id := uuid.NewV4()
+	room = &draft.Room{
+		Name: name,
+		UUID: id,
+	}
+
+	i.DraftRooms[id.String()] = room
+	i.Lock.Unlock()
+
+	return room, nil
+}
+
+func init() {
+	DefaultInMemoryCoordinator = NewInMemoryCoordinator()
 }
