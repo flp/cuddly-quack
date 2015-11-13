@@ -29,6 +29,7 @@ func main() {
 
 	http.Handle("/", &app.IndexHandler{})
 	http.Handle("/drafts/{id}", &app.ShowHandler{})
+	http.Handle("/drafts", &app.CreateDraftHandler{})
 	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
