@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -17,7 +16,6 @@ func (c *CreateDraftHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		// TODO Define JSON error bodies
 		rw.WriteHeader(http.StatusBadRequest)
-		fmt.Printf("NO BODY")
 		return
 	}
 
@@ -26,7 +24,6 @@ func (c *CreateDraftHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		// TODO Define JSON error bodies
 		rw.WriteHeader(http.StatusBadRequest)
-		fmt.Printf("err: %v", err)
 		return
 	}
 
