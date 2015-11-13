@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -16,13 +17,17 @@ func (c *CreateDraftHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		// TODO Define JSON error bodies
 		rw.WriteHeader(http.StatusBadRequest)
+		fmt.Printf("NO BODY")
+		return
 	}
 
-	var msg *wire.CreateDraftRequest
+	msg := &wire.CreateDraftRequest{}
 	err = json.Unmarshal(data, msg)
 	if err != nil {
 		// TODO Define JSON error bodies
 		rw.WriteHeader(http.StatusBadRequest)
+		fmt.Printf("err: %v", err)
+		return
 	}
 
 	coordinators.DefaultInMemoryCoordinator.CreateDraftRoom(msg)
