@@ -9,6 +9,12 @@ type Pack struct {
 	Cards []*Card
 }
 
+func NewPack() *Pack {
+	return &Pack{
+		Cards: []*Card{},
+	}
+}
+
 func (p Pack) String() string {
 	str := ""
 	for _, card := range p.Cards {
@@ -52,30 +58,33 @@ func ChooseNCards(cards []*Card, n int) []*Card {
 
 // ModernPackGenerator's GeneratePack creates a pack with 14 cards: 1 random rare, 3 random
 // uncommons, and 10 random commons.
-func (mpg ModernPackGenerator) GeneratePack() Pack {
-	// TODO(flp): we should be able to distinguish between sets
+func (mpg ModernPackGenerator) GeneratePack(s SetName) (Pack, error) {
 	// TODO(flp): foils
-	p := Pack{}
+	p := *NewPack()
+	raritiesToCards, err := GetCardsForSet(s)
+	if err != nil {
+		return p, err
+	}
 
 	// Get rare (possibly a mythic rare)
 	n := rand.Intn(8)
 	if n == 7 {
 		// Choose a mythic rare instead of a normal rare
-		mythics := RaritiesToCards[Mythic]
+		mythics := raritiesToCards[Mythic]
 		p.Cards = append(p.Cards, ChooseNCards(mythics, 1)...)
 	} else {
 		// Choose a normal rare
-		rares := RaritiesToCards[Rare]
+		rares := raritiesToCards[Rare]
 		p.Cards = append(p.Cards, ChooseNCards(rares, 1)...)
 	}
 
 	// Get uncommons
-	uncommons := RaritiesToCards[Uncommon]
+	uncommons := raritiesToCards[Uncommon]
 	p.Cards = append(p.Cards, ChooseNCards(uncommons, 3)...)
 
 	// Get commons
-	commons := RaritiesToCards[Common]
+	commons := raritiesToCards[Common]
 	p.Cards = append(p.Cards, ChooseNCards(commons, 10)...)
 
-	return p
+	return p, nil
 }
