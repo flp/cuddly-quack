@@ -67,14 +67,21 @@ func (i *InMemoryCoordinator) CreateDraftRoom(req *wire.CreateDraftRequest) (*dr
 func (i *InMemoryCoordinator) RegisterUser(userID string, roomID string) error {
 	hash := sha512.Sum512([]byte(userID + roomID))
 	key := string(hash[:len(hash)-1])
+	var err error
+
+	i.Lock.Lock()
 
 	registered, ok := i.UserRegistry[key]
 	if !registered || !ok {
 		i.UserRegistry[key] = true
-		return nil
+		err = nil
+	} else {
+		err = errors.New(fmt.Sprintf("User %s Already Registered for draft room: %s", userID, roomID))
 	}
 
-	return errors.New(fmt.Sprintf("User %s Already Registered for draft room: %s", userID, roomID))
+	i.Lock.Unlock()
+
+	return err
 }
 
 func init() {
