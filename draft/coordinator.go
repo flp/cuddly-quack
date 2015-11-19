@@ -1,5 +1,9 @@
 package draft
 
+import (
+	"github.com/flp/cuddly-quack/wire"
+)
+
 // Coordinator is an interface which
 // keeps track of active draft rooms and who is authenticated to join them.
 type Coordinator interface {

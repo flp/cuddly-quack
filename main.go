@@ -10,10 +10,14 @@ import (
 	"github.com/flp/cuddly-quack/app"
 	"github.com/flp/cuddly-quack/draft/coordinators"
 	"github.com/flp/cuddly-quack/mtg"
+	"github.com/flp/cuddly-quack/wire"
 )
 
 func main() {
-	coordinators.DefaultInMemoryCoordinator.CreateDraftRoom("test")
+	coordinators.DefaultInMemoryCoordinator.CreateDraftRoom(&wire.CreateDraftRequest{
+		Name: "test",
+		Set:  "BFZ",
+	})
 
 	// Seed the rng
 	rand.Seed(time.Now().UnixNano())
@@ -25,6 +29,7 @@ func main() {
 
 	http.Handle("/", &app.IndexHandler{})
 	http.Handle("/drafts/{id}", &app.ShowHandler{})
+	http.Handle("/drafts", &app.CreateDraftHandler{})
 	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
