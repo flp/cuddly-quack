@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
+
 	"github.com/flp/cuddly-quack/app"
 	"github.com/flp/cuddly-quack/draft/coordinators"
 	"github.com/flp/cuddly-quack/mtg"
@@ -27,10 +29,14 @@ func main() {
 	p, _ := mpg.GeneratePack(mtg.BattleForZendikar)
 	fmt.Println(p)
 
-	http.Handle("/", &app.IndexHandler{})
-	http.Handle("/drafts/{id}", &app.ShowHandler{})
-	http.Handle("/drafts", &app.CreateDraftHandler{})
-	err := http.ListenAndServe(":8000", nil)
+	r := mux.NewRouter()
+
+	r.Handle("/", &app.IndexHandler{}).Methods("GET")
+	r.Handle("/drafts/{id}", &app.ShowHandler{}).Methods("GET")
+	r.Handle("/drafts", &app.CreateDraftHandler{}).Methods("POST")
+	r.Handle("/drafts/{room_id}/join", &app.JoinHandler{}).Methods("POST")
+
+	err := http.ListenAndServe(":8000", r)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
