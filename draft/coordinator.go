@@ -5,4 +5,5 @@ package draft
 type Coordinator interface {
 	GetDraftRoom(id string) (*Room, error)
 	CreateDraftRoom(id string) (*Room, error)
+	RegisterUser(userID string, roomID string) error
 }
