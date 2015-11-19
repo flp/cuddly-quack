@@ -34,6 +34,7 @@ func main() {
 	r.Handle("/", &app.IndexHandler{}).Methods("GET")
 	r.Handle("/drafts/{id}", &app.ShowHandler{}).Methods("GET")
 	r.Handle("/drafts", &app.CreateDraftHandler{}).Methods("POST")
+	r.Handle("/drafts/{room_id}/join", &app.JoinHandler{}).Methods("POST")
 
 	err := http.ListenAndServe(":8000", r)
 	if err != nil {
