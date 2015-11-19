@@ -15,14 +15,22 @@ const (
 	BasicLand CardRarity = 5
 )
 
-type Card struct {
-	Name   string "name"
-	Rarity string "rarity"
+var CardRarityStringLookup = map[CardRarity]string{
+	Common:    "Common",
+	Uncommon:  "Uncommon",
+	Rare:      "Rare",
+	Mythic:    "Mythic",
+	Special:   "Special",
+	BasicLand: "BasicLand",
 }
 
-type Set struct {
-	Name  string  "name"
-	Cards []*Card "cards"
+func (cr CardRarity) String() string {
+	return CardRarityStringLookup[cr]
+}
+
+type Card struct {
+	Name   string
+	Rarity CardRarity
 }
 
 func (c Card) String() string {

@@ -9,6 +9,8 @@ import (
 
 	"github.com/flp/cuddly-quack/app"
 	"github.com/flp/cuddly-quack/draft/coordinators"
+	"github.com/flp/cuddly-quack/mtg"
+)
 
 func main() {
 	coordinators.DefaultInMemoryCoordinator.CreateDraftRoom("test")
@@ -16,11 +18,9 @@ func main() {
 	// Seed the rng
 	rand.Seed(time.Now().UnixNano())
 
-	// Read BFZ data and generate a pack
-	contents, _ := Asset("resources/BFZ.json")
-	mtg.ReadCardData(contents)
+	// Generate a pack
 	mpg := mtg.ModernPackGenerator{}
-	p := mpg.GeneratePack()
+	p, _ := mpg.GeneratePack(mtg.BattleForZendikar)
 	fmt.Println(p)
 
 	http.Handle("/", &app.IndexHandler{})
